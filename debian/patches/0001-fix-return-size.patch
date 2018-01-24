@@ -1,0 +1,61 @@
+From 4bf907a05f0d1ff6a005b7167e766460fb3d406c Mon Sep 17 00:00:00 2001
+From: Tobias Schlemmer <keinstein@users.sourceforge.net>
+Date: Wed, 24 Jan 2018 21:27:22 +0100
+Subject: fix return size
+
+---
+ src/x86/ffi.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/src/x86/ffi.c b/src/x86/ffi.c
+index 006c95d..a262d05 100644
+--- a/src/x86/ffi.c
++++ b/src/x86/ffi.c
+@@ -65,7 +65,8 @@ unsigned int ffi_prep_args(char *stack, extended_cif *ecif)
+   if ((ecif->cif->flags == FFI_TYPE_STRUCT
+        || ecif->cif->flags == FFI_TYPE_MS_STRUCT)
+ #ifdef X86_WIN64
+-      && ((ecif->cif->rtype->size & (1 | 2 | 4 | 8)) == 0)
++      && (ecif->cif->rtype->size != 1 && ecif->cif->rtype->size != 2
++          && ecif->cif->rtype->size != 4 && ecif->cif->rtype->size != 8)
+ #endif
+       )
+     {
+@@ -108,7 +109,7 @@ unsigned int ffi_prep_args(char *stack, extended_cif *ecif)
+ #ifdef X86_WIN64
+       if (z > FFI_SIZEOF_ARG
+           || ((*p_arg)->type == FFI_TYPE_STRUCT
+-              && (z & (1 | 2 | 4 | 8)) == 0)
++              && (z != 1 && z != 2 && z != 4 && z != 8))
+ #if FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
+           || ((*p_arg)->type == FFI_TYPE_LONGDOUBLE)
+ #endif
+@@ -360,7 +361,8 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ #ifdef X86_WIN64
+   if (rvalue == NULL
+       && cif->flags == FFI_TYPE_STRUCT
+-      && ((cif->rtype->size & (1 | 2 | 4 | 8)) == 0))
++      && cif->rtype->size != 1 && cif->rtype->size != 2
++      && cif->rtype->size != 4 && cif->rtype->size != 8)
+     {
+       ecif.rvalue = alloca((cif->rtype->size + 0xF) & ~0xF);
+     }
+@@ -545,7 +547,8 @@ ffi_prep_incoming_args(char *stack, void **rvalue, void **avalue,
+   if ((cif->flags == FFI_TYPE_STRUCT
+        || cif->flags == FFI_TYPE_MS_STRUCT)
+ #ifdef X86_WIN64
+-      && ((cif->rtype->size & (1 | 2 | 4 | 8)) == 0)
++      && ((cif->rtype->size != 1 && cif->rtype->size != 2
++           && cif->rtype->size != 4 && cif->rtype->size != 8))
+ #endif
+       )
+     {
+@@ -608,7 +611,7 @@ ffi_prep_incoming_args(char *stack, void **rvalue, void **avalue,
+ #ifdef X86_WIN64
+       if (z > FFI_SIZEOF_ARG
+           || ((*p_arg)->type == FFI_TYPE_STRUCT
+-              && (z & (1 | 2 | 4 | 8)) == 0)
++              && (z != 1 && z != 2 && z != 4 && z != 8))
+ #if FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
+           || ((*p_arg)->type == FFI_TYPE_LONGDOUBLE)
+ #endif
