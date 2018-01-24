@@ -1,5 +1,5 @@
 mingw-w64-libffi (3.2.1-1) unstable; urgency=medium
 
-  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+  * Initial release
 
  -- Tobias Schlemmer <keinstein@users.berlios.de>  Wed, 24 Jan 2018 21:16:47 +0100
