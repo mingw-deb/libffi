@@ -16,7 +16,7 @@ Depends: libffi1-mingw-w64 (= ${binary:Version}), ${misc:Depends}
 Description: Portable foreign function interface library (mingw-w64 runtime)
  This package contains everything that is needed to run prgorams using libffi.
 
-Package: libffi-mingw-w64
+Package: libffi1-mingw-w64
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Portable foreign function interface library (mingw-w64 development files)
